@@ -1,11 +1,19 @@
 import React from "react";
-import { Trophy, Users, TrendingUp, RefreshCw, Wifi, WifiOff } from "lucide-react";
+import {
+  Trophy,
+  Users,
+  TrendingUp,
+  RefreshCw,
+  Wifi,
+  WifiOff,
+} from "lucide-react";
 import { ChartContainer, StandingsBarChart } from "../components/Charts";
 import { useF1DataContext } from "../context/F1DataContext";
 
 const Constructors: React.FC = () => {
-  const { constructors, drivers, isLoading, error, isOnline, refreshData } = useF1DataContext();
-  
+  const { constructors, drivers, isLoading, error, isOnline, refreshData } =
+    useF1DataContext();
+
   const constructorStandingsData = constructors.map((constructor) => ({
     name: constructor.name.replace(" Racing", "").replace("Red Bull", "RB"),
     points: constructor.points,
@@ -25,7 +33,8 @@ const Constructors: React.FC = () => {
             Constructor Championship
           </h1>
           <p className="text-f1-gray-300 mt-2">
-            Team standings and performance analysis for the 2025 Formula 1 season
+            Team standings and performance analysis for the 2025 Formula 1
+            season
           </p>
         </div>
 
@@ -95,9 +104,7 @@ const Constructors: React.FC = () => {
               {constructors.map((constructor, index) => {
                 const teamDrivers = getDriversForTeam(constructor.name);
                 const pointsGap =
-                  index === 0
-                    ? 0
-                    : constructors[0].points - constructor.points;
+                  index === 0 ? 0 : constructors[0].points - constructor.points;
 
                 return (
                   <tr
@@ -277,16 +284,18 @@ const Constructors: React.FC = () => {
               <div className="flex items-center space-x-3">
                 <div
                   className="w-4 h-4 rounded-full"
-                  style={{ backgroundColor: constructors[0]?.color || '#E10600' }}
+                  style={{
+                    backgroundColor: constructors[0]?.color || "#E10600",
+                  }}
                 ></div>
                 <div>
                   <p className="text-white font-medium">
-                    {constructors[0]?.name || 'Leader'}
+                    {constructors[0]?.name || "Leader"}
                   </p>
                   <p className="text-f1-gray-400 text-sm">
                     Leading by{" "}
-                    {constructors[0] && constructors[1] 
-                      ? constructors[0].points - constructors[1].points 
+                    {constructors[0] && constructors[1]
+                      ? constructors[0].points - constructors[1].points
                       : 0}{" "}
                     points
                   </p>
@@ -345,9 +354,10 @@ const Constructors: React.FC = () => {
               <div className="flex justify-between">
                 <span>Avg Points per Team:</span>
                 <span className="text-white font-medium">
-                  {constructors.length > 0 
-                    ? (constructors.reduce((sum, c) => sum + c.points, 0) /
-                       constructors.length
+                  {constructors.length > 0
+                    ? (
+                        constructors.reduce((sum, c) => sum + c.points, 0) /
+                        constructors.length
                       ).toFixed(0)
                     : 0}
                 </span>

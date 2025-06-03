@@ -4,16 +4,29 @@ import {
   LapTimeChart,
   PerformanceTrendChart,
 } from "../components/Charts";
-import {
-  generateLapTimeData,
-  generateTelemetryData,
-} from "../data/f1Data";
+import { generateLapTimeData, generateTelemetryData } from "../data/f1Data";
 import { useF1DataContext } from "../context/F1DataContext";
 import type { TelemetryData } from "../types/f1";
-import { Activity, Zap, Gauge, Settings, RefreshCw, Wifi, WifiOff } from "lucide-react";
+import {
+  Activity,
+  Zap,
+  Gauge,
+  Settings,
+  RefreshCw,
+  Wifi,
+  WifiOff,
+} from "lucide-react";
 
 const Analytics: React.FC = () => {
-  const { drivers, races, seasonStats, isLoading, error, isOnline, refreshData } = useF1DataContext();
+  const {
+    drivers,
+    races,
+    seasonStats,
+    isLoading,
+    error,
+    isOnline,
+    refreshData,
+  } = useF1DataContext();
   const [selectedRace, setSelectedRace] = useState("1");
   const [telemetryData, setTelemetryData] = useState<TelemetryData[]>([]);
   const [isLiveMode, setIsLiveMode] = useState(false);
@@ -46,19 +59,21 @@ const Analytics: React.FC = () => {
   );
 
   // Performance trend data
-  const performanceTrendData = races.slice(0, seasonStats.completedRaces).map((race, index) => {
-    const raceData: { race: string; [key: string]: string | number } = {
-      race: race.name.replace(" Grand Prix", ""),
-    };
-    drivers.slice(0, 4).forEach((driver) => {
-      // Simulate points progression
-      raceData[driver.name] = Math.max(
-        0,
-        driver.points - (seasonStats.completedRaces - index - 1) * 25
-      );
+  const performanceTrendData = races
+    .slice(0, seasonStats.completedRaces)
+    .map((race, index) => {
+      const raceData: { race: string; [key: string]: string | number } = {
+        race: race.name.replace(" Grand Prix", ""),
+      };
+      drivers.slice(0, 4).forEach((driver) => {
+        // Simulate points progression
+        raceData[driver.name] = Math.max(
+          0,
+          driver.points - (seasonStats.completedRaces - index - 1) * 25
+        );
+      });
+      return raceData;
     });
-    return raceData;
-  });
 
   // Live telemetry simulation
   useEffect(() => {
@@ -139,7 +154,7 @@ const Analytics: React.FC = () => {
 
       {/* Lap Time Analysis */}
       <ChartContainer
-        title={`Lap Time Analysis - ${races.find((r) => r.id === selectedRace)?.name || 'Race'}`}
+        title={`Lap Time Analysis - ${races.find((r) => r.id === selectedRace)?.name || "Race"}`}
       >
         <LapTimeChart
           data={lapTimeData}
@@ -281,8 +296,8 @@ const Analytics: React.FC = () => {
               <li className="flex items-start space-x-3">
                 <div className="w-2 h-2 bg-f1-red rounded-full mt-2"></div>
                 <span>
-                  {drivers[0]?.name || 'Leader'} maintains consistent sub-1:21 lap times
-                  throughout the race
+                  {drivers[0]?.name || "Leader"} maintains consistent sub-1:21
+                  lap times throughout the race
                 </span>
               </li>
               <li className="flex items-start space-x-3">

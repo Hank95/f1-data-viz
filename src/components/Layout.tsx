@@ -55,7 +55,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   Data Analytics
                 </h1>
                 <p className="text-sm text-f1-gray-400">
-                  {selectedSeason === "current" ? "2025" : selectedSeason} Season Dashboard
+                  {selectedSeason === "current" ? "2025" : selectedSeason}{" "}
+                  Season Dashboard
                 </p>
               </div>
             </div>
@@ -82,42 +83,49 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <div className="h-6 w-px bg-f1-gray-700"></div>
 
               <nav className="flex items-center gap-2">
-              {navigation.map((item) => {
-                const Icon = item.icon;
-                const isActive = isCurrentPage(item.href);
-                return (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    className={`relative group flex items-center gap-3 px-5 py-3 rounded-2xl text-sm font-medium transition-all duration-200 ${
-                      isActive
-                        ? "text-white"
-                        : "text-f1-gray-400 hover:text-white"
-                    }`}
-                  >
-                    {/* Active background */}
-                    {isActive && (
-                      <div className="absolute inset-0 bg-gradient-to-r from-f1-red/20 to-red-600/20 rounded-2xl" />
-                    )}
-                    
-                    {/* Hover background */}
-                    <div className={`absolute inset-0 rounded-2xl transition-opacity duration-200 ${
-                      isActive ? "opacity-0" : "opacity-0 group-hover:opacity-100"
-                    } bg-f1-gray-800/50`} />
-                    
-                    {/* Content */}
-                    <div className="relative flex items-center gap-2">
-                      <Icon size={18} className={isActive ? "text-f1-red" : ""} />
-                      <span>{item.name}</span>
-                    </div>
-                    
-                    {/* Active indicator */}
-                    {isActive && (
-                      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-12 h-0.5 bg-gradient-to-r from-f1-red to-red-600 rounded-full" />
-                    )}
-                  </Link>
-                );
-              })}
+                {navigation.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = isCurrentPage(item.href);
+                  return (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className={`relative group flex items-center gap-3 px-5 py-3 rounded-2xl text-sm font-medium transition-all duration-200 ${
+                        isActive
+                          ? "text-white"
+                          : "text-f1-gray-400 hover:text-white"
+                      }`}
+                    >
+                      {/* Active background */}
+                      {isActive && (
+                        <div className="absolute inset-0 bg-gradient-to-r from-f1-red/20 to-red-600/20 rounded-2xl" />
+                      )}
+
+                      {/* Hover background */}
+                      <div
+                        className={`absolute inset-0 rounded-2xl transition-opacity duration-200 ${
+                          isActive
+                            ? "opacity-0"
+                            : "opacity-0 group-hover:opacity-100"
+                        } bg-f1-gray-800/50`}
+                      />
+
+                      {/* Content */}
+                      <div className="relative flex items-center gap-2">
+                        <Icon
+                          size={18}
+                          className={isActive ? "text-f1-red" : ""}
+                        />
+                        <span>{item.name}</span>
+                      </div>
+
+                      {/* Active indicator */}
+                      {isActive && (
+                        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-12 h-0.5 bg-gradient-to-r from-f1-red to-red-600 rounded-full" />
+                      )}
+                    </Link>
+                  );
+                })}
               </nav>
             </div>
 

@@ -35,10 +35,16 @@
   100% { transform: translateY(0); opacity: 1; }
 }
 
-* {
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
 body {
