@@ -5,15 +5,15 @@ import {
   PerformanceTrendChart,
 } from "../components/Charts";
 import {
-  mockDrivers,
   generateLapTimeData,
   generateTelemetryData,
-  mockRaces,
 } from "../data/f1Data";
+import { useF1DataContext } from "../context/F1DataContext";
 import type { TelemetryData } from "../types/f1";
-import { Activity, Zap, Gauge, Settings } from "lucide-react";
+import { Activity, Zap, Gauge, Settings, RefreshCw, Wifi, WifiOff } from "lucide-react";
 
 const Analytics: React.FC = () => {
+  const { drivers, races, seasonStats, isLoading, error, isOnline, refreshData } = useF1DataContext();
   const [selectedRace, setSelectedRace] = useState("1");
   const [telemetryData, setTelemetryData] = useState<TelemetryData[]>([]);
   const [isLiveMode, setIsLiveMode] = useState(false);
@@ -36,8 +36,8 @@ const Analytics: React.FC = () => {
     return Object.values(processedData);
   }, [selectedRace]);
 
-  const driverNames = mockDrivers.slice(0, 6).map((d) => d.name);
-  const driverColors = mockDrivers.slice(0, 6).reduce(
+  const driverNames = drivers.slice(0, 6).map((d) => d.name);
+  const driverColors = drivers.slice(0, 6).reduce(
     (acc, driver) => {
       acc[driver.name] = driver.teamColor;
       return acc;
@@ -46,15 +46,15 @@ const Analytics: React.FC = () => {
   );
 
   // Performance trend data
-  const performanceTrendData = mockRaces.map((race, index) => {
+  const performanceTrendData = races.slice(0, seasonStats.completedRaces).map((race, index) => {
     const raceData: { race: string; [key: string]: string | number } = {
       race: race.name.replace(" Grand Prix", ""),
     };
-    mockDrivers.slice(0, 4).forEach((driver) => {
+    drivers.slice(0, 4).forEach((driver) => {
       // Simulate points progression
       raceData[driver.name] = Math.max(
         0,
-        driver.points - (mockRaces.length - index - 1) * 25
+        driver.points - (seasonStats.completedRaces - index - 1) * 25
       );
     });
     return raceData;
@@ -88,12 +88,35 @@ const Analytics: React.FC = () => {
         </div>
 
         <div className="flex items-center space-x-4">
+          {/* Connection Status */}
+          <div className="flex items-center space-x-2">
+            {isOnline ? (
+              <Wifi size={16} className="text-green-400" />
+            ) : (
+              <WifiOff size={16} className="text-orange-400" />
+            )}
+            <span className="text-sm text-f1-gray-400">
+              {isOnline ? "Live Data" : "Demo Mode"}
+            </span>
+          </div>
+
+          {/* Refresh Button */}
+          <button
+            onClick={refreshData}
+            disabled={isLoading}
+            className="p-2 rounded-lg bg-f1-gray-800 hover:bg-f1-gray-700 text-white transition-colors disabled:opacity-50"
+          >
+            <RefreshCw size={18} className={isLoading ? "animate-spin" : ""} />
+          </button>
+
+          <div className="h-6 w-px bg-f1-gray-600"></div>
+
           <select
             value={selectedRace}
             onChange={(e) => setSelectedRace(e.target.value)}
             className="bg-f1-gray-800 border border-f1-gray-600 text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-f1-red focus:border-transparent"
           >
-            {mockRaces.map((race) => (
+            {races.map((race) => (
               <option key={race.id} value={race.id}>
                 {race.name}
               </option>
@@ -116,7 +139,7 @@ const Analytics: React.FC = () => {
 
       {/* Lap Time Analysis */}
       <ChartContainer
-        title={`Lap Time Analysis - ${mockRaces.find((r) => r.id === selectedRace)?.name}`}
+        title={`Lap Time Analysis - ${races.find((r) => r.id === selectedRace)?.name || 'Race'}`}
       >
         <LapTimeChart
           data={lapTimeData}
@@ -146,8 +169,8 @@ const Analytics: React.FC = () => {
       <ChartContainer title="Championship Points Progression">
         <PerformanceTrendChart
           data={performanceTrendData}
-          drivers={mockDrivers.slice(0, 4).map((d) => d.name)}
-          colors={mockDrivers.slice(0, 4).reduce(
+          drivers={drivers.slice(0, 4).map((d) => d.name)}
+          colors={drivers.slice(0, 4).reduce(
             (acc, driver) => {
               acc[driver.name] = driver.teamColor;
               return acc;
@@ -258,7 +281,7 @@ const Analytics: React.FC = () => {
               <li className="flex items-start space-x-3">
                 <div className="w-2 h-2 bg-f1-red rounded-full mt-2"></div>
                 <span>
-                  Max Verstappen maintains consistent sub-1:21 lap times
+                  {drivers[0]?.name || 'Leader'} maintains consistent sub-1:21 lap times
                   throughout the race
                 </span>
               </li>

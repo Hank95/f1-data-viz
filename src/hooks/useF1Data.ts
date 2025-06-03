@@ -31,12 +31,14 @@ interface UseF1DataReturn {
   isLoading: boolean;
   error: string | null;
   isOnline: boolean;
+  selectedSeason: string;
+  setSelectedSeason: (season: string) => void;
   refreshData: () => Promise<void>;
   getRaceResults: (season?: string, round?: string) => Promise<RaceResult[]>;
   getRaceDetails: (season: string, round: string) => Promise<Race | null>;
 }
 
-export const useF1Data = (): UseF1DataReturn => {
+export const useF1Data = (initialSeason: string = "current"): UseF1DataReturn => {
   const [drivers, setDrivers] = useState<Driver[]>(mockDrivers);
   const [constructors, setConstructors] =
     useState<Constructor[]>(mockConstructors);
@@ -45,6 +47,7 @@ export const useF1Data = (): UseF1DataReturn => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isOnline, setIsOnline] = useState(false);
+  const [selectedSeason, setSelectedSeason] = useState(initialSeason);
 
   // Check if Jolpica API is available
   const checkConnection = useCallback(async () => {
@@ -72,10 +75,10 @@ export const useF1Data = (): UseF1DataReturn => {
         // Fetch data in parallel for better performance
         const [driversData, constructorsData, racesData, statsData] =
           await Promise.allSettled([
-            getCurrentDriverStandings(),
-            getCurrentConstructorStandings(),
-            getCurrentSeasonRaces(),
-            getSeasonStats(),
+            getCurrentDriverStandings(selectedSeason),
+            getCurrentConstructorStandings(selectedSeason),
+            getCurrentSeasonRaces(selectedSeason),
+            getSeasonStats(selectedSeason),
           ]);
 
         // Update drivers if successful
@@ -109,7 +112,7 @@ export const useF1Data = (): UseF1DataReturn => {
               if (isPastRace) {
                 try {
                   const raceWithResults = await getRaceWithResults(
-                    "current",
+                    selectedSeason === "current" ? "current" : selectedSeason,
                     race.round.toString()
                   );
                   return raceWithResults || race;
@@ -147,7 +150,7 @@ export const useF1Data = (): UseF1DataReturn => {
     } finally {
       setIsLoading(false);
     }
-  }, [checkConnection]);
+  }, [checkConnection, selectedSeason]);
 
   // Get race results for a specific race
   const getRaceResultsCallback = useCallback(
@@ -192,10 +195,10 @@ export const useF1Data = (): UseF1DataReturn => {
     await fetchData();
   }, [fetchData]);
 
-  // Initial data fetch
+  // Initial data fetch and refetch when season changes
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, [fetchData, selectedSeason]);
 
   // Refresh data every 5 minutes when online
   useEffect(() => {
@@ -220,6 +223,8 @@ export const useF1Data = (): UseF1DataReturn => {
     isLoading,
     error,
     isOnline,
+    selectedSeason,
+    setSelectedSeason,
     refreshData,
     getRaceResults: getRaceResultsCallback,
     getRaceDetails: getRaceDetailsCallback,

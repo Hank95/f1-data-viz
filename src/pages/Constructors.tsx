@@ -1,29 +1,56 @@
 import React from "react";
-import { Trophy, Users, TrendingUp } from "lucide-react";
+import { Trophy, Users, TrendingUp, RefreshCw, Wifi, WifiOff } from "lucide-react";
 import { ChartContainer, StandingsBarChart } from "../components/Charts";
-import { mockConstructors, mockDrivers } from "../data/f1Data";
+import { useF1DataContext } from "../context/F1DataContext";
 
 const Constructors: React.FC = () => {
-  const constructorStandingsData = mockConstructors.map((constructor) => ({
+  const { constructors, drivers, isLoading, error, isOnline, refreshData } = useF1DataContext();
+  
+  const constructorStandingsData = constructors.map((constructor) => ({
     name: constructor.name.replace(" Racing", "").replace("Red Bull", "RB"),
     points: constructor.points,
     color: constructor.color,
   }));
 
   const getDriversForTeam = (teamName: string) => {
-    return mockDrivers.filter((driver) => driver.team === teamName);
+    return drivers.filter((driver) => driver.team === teamName);
   };
 
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-white">
-          Constructor Championship
-        </h1>
-        <p className="text-f1-gray-300 mt-2">
-          Team standings and performance analysis for the 2024 Formula 1 season
-        </p>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+        <div>
+          <h1 className="text-3xl font-bold text-white">
+            Constructor Championship
+          </h1>
+          <p className="text-f1-gray-300 mt-2">
+            Team standings and performance analysis for the 2025 Formula 1 season
+          </p>
+        </div>
+
+        <div className="flex items-center space-x-4">
+          {/* Connection Status */}
+          <div className="flex items-center space-x-2">
+            {isOnline ? (
+              <Wifi size={16} className="text-green-400" />
+            ) : (
+              <WifiOff size={16} className="text-orange-400" />
+            )}
+            <span className="text-sm text-f1-gray-400">
+              {isOnline ? "Live Data" : "Demo Mode"}
+            </span>
+          </div>
+
+          {/* Refresh Button */}
+          <button
+            onClick={refreshData}
+            disabled={isLoading}
+            className="p-2 rounded-lg bg-f1-gray-800 hover:bg-f1-gray-700 text-white transition-colors disabled:opacity-50"
+          >
+            <RefreshCw size={18} className={isLoading ? "animate-spin" : ""} />
+          </button>
+        </div>
       </div>
 
       {/* Constructor Standings Chart */}
@@ -65,12 +92,12 @@ const Constructors: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-f1-gray-700/30">
-              {mockConstructors.map((constructor, index) => {
+              {constructors.map((constructor, index) => {
                 const teamDrivers = getDriversForTeam(constructor.name);
                 const pointsGap =
                   index === 0
                     ? 0
-                    : mockConstructors[0].points - constructor.points;
+                    : constructors[0].points - constructor.points;
 
                 return (
                   <tr
@@ -145,7 +172,7 @@ const Constructors: React.FC = () => {
 
       {/* Team Performance Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {mockConstructors.slice(0, 4).map((constructor) => {
+        {constructors.slice(0, 4).map((constructor) => {
           const teamDrivers = getDriversForTeam(constructor.name);
           const avgDriverPoints =
             teamDrivers.reduce((sum, driver) => sum + driver.points, 0) /
@@ -250,15 +277,17 @@ const Constructors: React.FC = () => {
               <div className="flex items-center space-x-3">
                 <div
                   className="w-4 h-4 rounded-full"
-                  style={{ backgroundColor: mockConstructors[0].color }}
+                  style={{ backgroundColor: constructors[0]?.color || '#E10600' }}
                 ></div>
                 <div>
                   <p className="text-white font-medium">
-                    {mockConstructors[0].name}
+                    {constructors[0]?.name || 'Leader'}
                   </p>
                   <p className="text-f1-gray-400 text-sm">
                     Leading by{" "}
-                    {mockConstructors[0].points - mockConstructors[1].points}{" "}
+                    {constructors[0] && constructors[1] 
+                      ? constructors[0].points - constructors[1].points 
+                      : 0}{" "}
                     points
                   </p>
                 </div>
@@ -274,7 +303,7 @@ const Constructors: React.FC = () => {
             <h4 className="text-lg font-semibold text-f1-red">Close Battle</h4>
             <div className="space-y-3">
               <div className="space-y-2">
-                {mockConstructors.slice(1, 3).map((constructor) => (
+                {constructors.slice(1, 3).map((constructor) => (
                   <div
                     key={constructor.id}
                     className="flex items-center space-x-3"
@@ -304,22 +333,23 @@ const Constructors: React.FC = () => {
               <div className="flex justify-between">
                 <span>Total Points Scored:</span>
                 <span className="text-white font-medium">
-                  {mockConstructors.reduce((sum, c) => sum + c.points, 0)}
+                  {constructors.reduce((sum, c) => sum + c.points, 0)}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span>Total Wins:</span>
                 <span className="text-white font-medium">
-                  {mockConstructors.reduce((sum, c) => sum + c.wins, 0)}
+                  {constructors.reduce((sum, c) => sum + c.wins, 0)}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span>Avg Points per Team:</span>
                 <span className="text-white font-medium">
-                  {(
-                    mockConstructors.reduce((sum, c) => sum + c.points, 0) /
-                    mockConstructors.length
-                  ).toFixed(0)}
+                  {constructors.length > 0 
+                    ? (constructors.reduce((sum, c) => sum + c.points, 0) /
+                       constructors.length
+                      ).toFixed(0)
+                    : 0}
                 </span>
               </div>
             </div>

@@ -1,26 +1,61 @@
-import React, { useState } from "react";
-import { Calendar, MapPin, Clock, Trophy, Zap, Flag } from "lucide-react";
-import { mockRaces, getMockRaceResults } from "../data/f1Data";
+import React, { useState, useEffect } from "react";
+import { Calendar, MapPin, Clock, Trophy, Zap, Flag, RefreshCw, Wifi, WifiOff } from "lucide-react";
+import { useF1DataContext } from "../context/F1DataContext";
 import { format } from "date-fns";
+import type { RaceResult } from "../types/f1";
 
 const Races: React.FC = () => {
+  const { races, seasonStats, isLoading, error, isOnline, refreshData, getRaceResults } = useF1DataContext();
   const [selectedRace, setSelectedRace] = useState<string | null>(null);
+  const [raceResults, setRaceResults] = useState<RaceResult[]>([]);
 
   const formatRaceDate = (dateString: string) => {
     return format(new Date(dateString), "MMM dd, yyyy");
   };
 
+  // Fetch race results when a race is selected
+  useEffect(() => {
+    if (selectedRace) {
+      getRaceResults("current", selectedRace).then(setRaceResults);
+    }
+  }, [selectedRace, getRaceResults]);
+
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-white">
-          Race Calendar & Results
-        </h1>
-        <p className="text-f1-gray-300 mt-2">
-          Complete 2024 Formula 1 race schedule with detailed results and
-          statistics
-        </p>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+        <div>
+          <h1 className="text-3xl font-bold text-white">
+            Race Calendar & Results
+          </h1>
+          <p className="text-f1-gray-300 mt-2">
+            Complete 2025 Formula 1 race schedule with detailed results and
+            statistics
+          </p>
+        </div>
+
+        <div className="flex items-center space-x-4">
+          {/* Connection Status */}
+          <div className="flex items-center space-x-2">
+            {isOnline ? (
+              <Wifi size={16} className="text-green-400" />
+            ) : (
+              <WifiOff size={16} className="text-orange-400" />
+            )}
+            <span className="text-sm text-f1-gray-400">
+              {isOnline ? "Live Data" : "Demo Mode"}
+            </span>
+          </div>
+
+          {/* Refresh Button */}
+          <button
+            onClick={refreshData}
+            disabled={isLoading}
+            className="p-2 rounded-lg bg-f1-gray-800 hover:bg-f1-gray-700 text-white transition-colors disabled:opacity-50"
+          >
+            <RefreshCw size={18} className={isLoading ? "animate-spin" : ""} />
+          </button>
+        </div>
       </div>
 
       {/* Season Progress */}
@@ -28,24 +63,24 @@ const Races: React.FC = () => {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-white">Season Progress</h2>
           <div className="text-right">
-            <p className="text-white font-bold">{mockRaces.length} / 24</p>
+            <p className="text-white font-bold">{seasonStats.completedRaces} / {seasonStats.totalRaces}</p>
             <p className="text-f1-gray-400 text-sm">Races completed</p>
           </div>
         </div>
         <div className="w-full bg-f1-gray-700 rounded-full h-3">
           <div
             className="bg-gradient-to-r from-f1-red to-red-600 h-3 rounded-full transition-all duration-1000"
-            style={{ width: `${(mockRaces.length / 24) * 100}%` }}
+            style={{ width: `${(seasonStats.completedRaces / seasonStats.totalRaces) * 100}%` }}
           ></div>
         </div>
         <div className="mt-3 text-sm text-f1-gray-400">
-          {24 - mockRaces.length} races remaining in the 2024 championship
+          {seasonStats.totalRaces - seasonStats.completedRaces} races remaining in the 2025 championship
         </div>
       </div>
 
       {/* Race Calendar */}
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        {mockRaces.map((race) => (
+        {races.map((race) => (
           <div
             key={race.id}
             className={`bg-f1-gray-900/50 backdrop-blur-sm rounded-xl border transition-all duration-300 cursor-pointer hover:scale-105 ${
@@ -135,8 +170,8 @@ const Races: React.FC = () => {
       {selectedRace && (
         <div className="bg-f1-gray-900/50 backdrop-blur-sm rounded-xl border border-f1-gray-700/50 overflow-hidden">
           {(() => {
-            const race = mockRaces.find((r) => r.id === selectedRace);
-            const results = getMockRaceResults(selectedRace);
+            const race = races.find((r) => r.id === selectedRace);
+            const results = raceResults;
 
             if (!race) return null;
 
@@ -272,17 +307,17 @@ const Races: React.FC = () => {
           {[
             {
               name: "Miami Grand Prix",
-              date: "2024-05-05",
+              date: "2025-05-04",
               country: "United States",
             },
             {
               name: "Emilia Romagna Grand Prix",
-              date: "2024-05-19",
+              date: "2025-05-18",
               country: "Italy",
             },
             {
               name: "Monaco Grand Prix",
-              date: "2024-05-26",
+              date: "2025-05-25",
               country: "Monaco",
             },
           ].map((race, index) => (
@@ -290,7 +325,7 @@ const Races: React.FC = () => {
               <div className="flex items-center justify-between mb-2">
                 <h4 className="text-white font-semibold">{race.name}</h4>
                 <span className="text-f1-gray-400 text-sm">
-                  R{mockRaces.length + index + 1}
+                  R{seasonStats.completedRaces + index + 1}
                 </span>
               </div>
               <div className="space-y-2">

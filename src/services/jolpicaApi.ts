@@ -189,10 +189,10 @@ async function fetchFromJolpica<T>(
 }
 
 // Driver Standings API
-export async function getCurrentDriverStandings(): Promise<Driver[]> {
+export async function getCurrentDriverStandings(season: string = "current"): Promise<Driver[]> {
   try {
     const response = await fetchFromJolpica<StandingTable>(
-      "/current/driverStandings"
+      `/${season}/driverStandings`
     );
     const standings =
       response.MRData.StandingsTable.StandingsLists[0]?.DriverStandings || [];
@@ -217,10 +217,10 @@ export async function getCurrentDriverStandings(): Promise<Driver[]> {
 }
 
 // Constructor Standings API
-export async function getCurrentConstructorStandings(): Promise<Constructor[]> {
+export async function getCurrentConstructorStandings(season: string = "current"): Promise<Constructor[]> {
   try {
     const response = await fetchFromJolpica<StandingTable>(
-      "/current/constructorStandings"
+      `/${season}/constructorStandings`
     );
     const standings =
       response.MRData.StandingsTable.StandingsLists[0]?.ConstructorStandings ||
@@ -228,7 +228,7 @@ export async function getCurrentConstructorStandings(): Promise<Constructor[]> {
 
     // Get drivers for each constructor
     const driversResponse =
-      await fetchFromJolpica<DriverTable>("/current/drivers");
+      await fetchFromJolpica<DriverTable>(`/${season}/drivers`);
     const allDrivers = driversResponse.MRData.DriverTable.Drivers;
 
     return standings.map((standing) => {
@@ -258,9 +258,9 @@ export async function getCurrentConstructorStandings(): Promise<Constructor[]> {
 }
 
 // Race Schedule API
-export async function getCurrentSeasonRaces(): Promise<Race[]> {
+export async function getCurrentSeasonRaces(season: string = "current"): Promise<Race[]> {
   try {
-    const response = await fetchFromJolpica<RaceTable>("/current/races");
+    const response = await fetchFromJolpica<RaceTable>(`/${season}/races`);
     const races = response.MRData.RaceTable.Races || [];
 
     return races.map((race) => ({
@@ -351,11 +351,11 @@ export async function getRaceWithResults(
 }
 
 // Get season statistics
-export async function getSeasonStats() {
+export async function getSeasonStats(season: string = "current") {
   try {
     const [racesResponse, driversResponse] = await Promise.all([
-      fetchFromJolpica<RaceTable>("/current/races"),
-      fetchFromJolpica<DriverTable>("/current/drivers"),
+      fetchFromJolpica<RaceTable>(`/${season}/races`),
+      fetchFromJolpica<DriverTable>(`/${season}/drivers`),
     ]);
 
     const races = racesResponse.MRData.RaceTable.Races || [];

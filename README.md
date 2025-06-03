@@ -79,7 +79,7 @@ This project uses the **Jolpica F1 API** as its primary data source:
 - **Features**: Backwards compatible with Ergast API
 - **Coverage**: Complete F1 data from 1950 to present
 
-> **Why Jolpica?** The original Ergast API is being deprecated after the 2024 season and will shut down in early 2025. Jolpica is the community-backed successor, providing the same data structure with improved reliability and ongoing maintenance.
+> **Why Jolpica?** The original Ergast API was deprecated after the 2024 season and shut down in early 2025. Jolpica is the community-backed successor, providing the same data structure with improved reliability and ongoing maintenance.
 
 ### Fallback: Demo Data
 
@@ -195,7 +195,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 - **Jolpica F1 Community** for maintaining the F1 API after Ergast deprecation
 - **Formula 1** for the amazing sport and data
-- **Ergast Developer API** for years of reliable F1 data (RIP 2024)
+- **Ergast Developer API** for years of reliable F1 data (RIP early 2025)
 - **TanStack Team** for excellent router and query tools
 - **Tailwind CSS** for the utility-first CSS framework
 

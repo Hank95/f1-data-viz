@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { Trophy, TrendingUp, Target, Award } from "lucide-react";
-import { mockDrivers } from "../data/f1Data";
+import { Trophy, TrendingUp, Target, Award, RefreshCw, Wifi, WifiOff } from "lucide-react";
+import { useF1DataContext } from "../context/F1DataContext";
 
 const Drivers: React.FC = () => {
+  const { drivers, isLoading, error, isOnline, refreshData } = useF1DataContext();
   const [selectedDriver, setSelectedDriver] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<"points" | "wins" | "podiums">("points");
 
-  const sortedDrivers = [...mockDrivers].sort((a, b) => {
+  const sortedDrivers = [...drivers].sort((a, b) => {
     switch (sortBy) {
       case "wins":
         return b.wins - a.wins;
@@ -30,11 +31,34 @@ const Drivers: React.FC = () => {
         <div>
           <h1 className="text-3xl font-bold text-white">Driver Championship</h1>
           <p className="text-f1-gray-300 mt-2">
-            Current standings and detailed driver statistics for the 2024 season
+            Current standings and detailed driver statistics for the 2025 season
           </p>
         </div>
 
         <div className="flex items-center space-x-4">
+          {/* Connection Status */}
+          <div className="flex items-center space-x-2">
+            {isOnline ? (
+              <Wifi size={16} className="text-green-400" />
+            ) : (
+              <WifiOff size={16} className="text-orange-400" />
+            )}
+            <span className="text-sm text-f1-gray-400">
+              {isOnline ? "Live Data" : "Demo Mode"}
+            </span>
+          </div>
+
+          {/* Refresh Button */}
+          <button
+            onClick={refreshData}
+            disabled={isLoading}
+            className="p-2 rounded-lg bg-f1-gray-800 hover:bg-f1-gray-700 text-white transition-colors disabled:opacity-50"
+          >
+            <RefreshCw size={18} className={isLoading ? "animate-spin" : ""} />
+          </button>
+
+          <div className="h-6 w-px bg-f1-gray-600"></div>
+
           <label className="text-f1-gray-300 text-sm">Sort by:</label>
           <select
             value={sortBy}
@@ -184,7 +208,7 @@ const Drivers: React.FC = () => {
       {selectedDriver && (
         <div className="bg-f1-gray-900/50 backdrop-blur-sm rounded-xl border border-f1-gray-700/50 p-6">
           {(() => {
-            const driver = mockDrivers.find((d) => d.id === selectedDriver);
+            const driver = drivers.find((d) => d.id === selectedDriver);
             if (!driver) return null;
 
             return (
@@ -292,9 +316,9 @@ const Drivers: React.FC = () => {
           Championship Battle
         </h3>
         <div className="space-y-4">
-          {mockDrivers.slice(0, 3).map((driver, index) => {
+          {drivers.slice(0, 3).map((driver, index) => {
             const pointsGap =
-              index === 0 ? 0 : mockDrivers[0].points - driver.points;
+              index === 0 ? 0 : drivers[0].points - driver.points;
             return (
               <div key={driver.id} className="flex items-center space-x-4">
                 <div className="flex items-center space-x-3 flex-1">
