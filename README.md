@@ -4,9 +4,12 @@ A modern, comprehensive Formula 1 data visualization dashboard built with **Reac
 
 ## 🌐 Live Demo
 
-**[View Live Dashboard → f1.henrypendleton.com](https://f1.henrypendleton.com)**
-
-[![F1 Data Visualization Dashboard](https://f1.henrypendleton.com/og-image.jpg)](https://f1.henrypendleton.com)
+[![Live Demo](https://img.shields.io/badge/🏎️_Live_Demo-f1.henrypendleton.com-E10600?style=for-the-badge)](https://f1.henrypendleton.com)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=flat&logo=react)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-100%25-3178C6?style=flat&logo=typescript)](https://www.typescriptlang.org/)
+[![TanStack Router](https://img.shields.io/badge/TanStack-Router-FF4154?style=flat)](https://tanstack.com/router)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-06B6D4?style=flat&logo=tailwindcss)](https://tailwindcss.com/)
+[![Vite](https://img.shields.io/badge/Vite-Build-646CFF?style=flat&logo=vite)](https://vitejs.dev/)
 
 ## 🏎️ Features
 
