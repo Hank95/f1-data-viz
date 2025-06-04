@@ -11,7 +11,7 @@ import { ChartContainer, StandingsBarChart } from "../components/Charts";
 import { useF1DataContext } from "../context/F1DataContext";
 
 const Constructors: React.FC = () => {
-  const { constructors, drivers, isLoading, error, isOnline, refreshData } =
+  const { constructors, drivers, isLoading, /* error, */ isOnline, refreshData } =
     useF1DataContext();
 
   const constructorStandingsData = constructors.map((constructor) => ({

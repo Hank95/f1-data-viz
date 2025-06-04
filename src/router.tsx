@@ -4,13 +4,25 @@ import {
   createRoute,
   Outlet,
 } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import Layout from "./components/Layout";
-import Dashboard from "./pages/Dashboard";
-import Drivers from "./pages/Drivers";
-import Constructors from "./pages/Constructors";
-import Races from "./pages/Races";
-import Analytics from "./pages/Analytics";
+import { lazy } from "react";
+
+// Lazy load pages for better performance
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Drivers = lazy(() => import("./pages/Drivers"));
+const Constructors = lazy(() => import("./pages/Constructors"));
+const Races = lazy(() => import("./pages/Races"));
+const Analytics = lazy(() => import("./pages/Analytics"));
+
+// Only load devtools in development
+const TanStackRouterDevtools =
+  process.env.NODE_ENV === "production"
+    ? () => null // Return null component in production
+    : lazy(() =>
+        import("@tanstack/router-devtools").then((res) => ({
+          default: res.TanStackRouterDevtools,
+        }))
+      );
 
 const rootRoute = createRootRoute({
   component: () => (

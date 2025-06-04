@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext } from 'react';
 import { useF1Data } from '../hooks/useF1Data';
 import type { Driver, Constructor, Race, RaceResult, SeasonStats } from '../types/f1';
 

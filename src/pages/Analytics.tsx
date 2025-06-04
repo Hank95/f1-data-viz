@@ -23,7 +23,7 @@ const Analytics: React.FC = () => {
     races,
     seasonStats,
     isLoading,
-    error,
+    // error,
     isOnline,
     refreshData,
   } = useF1DataContext();

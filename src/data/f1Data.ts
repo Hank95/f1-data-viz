@@ -263,7 +263,7 @@ export const mockRaces: Race[] = [
 
 // Generate lap time data for visualization
 export const generateLapTimeData = (
-  raceId: string,
+  _raceId: string,
   numLaps: number = 60
 ): LapTime[] => {
   const drivers = mockDrivers.slice(0, 8); // Top 8 drivers
@@ -321,7 +321,7 @@ export const mockSeasonStats: SeasonStats = {
   totalDistance: 19840,
 };
 
-export const getMockRaceResults = (raceId: string): RaceResult[] => {
+export const getMockRaceResults = (_raceId: string): RaceResult[] => {
   return mockDrivers.slice(0, 10).map((driver, index) => ({
     position: index + 1,
     driver: driver.name,

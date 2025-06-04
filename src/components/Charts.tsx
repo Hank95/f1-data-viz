@@ -64,8 +64,10 @@ export const StandingsBarChart: React.FC<StandingsBarChartProps> = ({
           backgroundColor: "#1F2937",
           border: "1px solid #374151",
           borderRadius: "8px",
-          color: "#FFFFFF",
+          color: "#F9FAFB",
         }}
+        labelStyle={{ color: "#F9FAFB" }}
+        itemStyle={{ color: "#F9FAFB" }}
       />
       <Bar dataKey="points" radius={[4, 4, 0, 0]}>
         {data.map((entry, index) => (
@@ -121,8 +123,10 @@ export const LapTimeChart: React.FC<LapTimeChartProps> = ({
           backgroundColor: "#1F2937",
           border: "1px solid #374151",
           borderRadius: "8px",
-          color: "#FFFFFF",
+          color: "#F9FAFB",
         }}
+        labelStyle={{ color: "#F9FAFB" }}
+        itemStyle={{ color: "#F9FAFB" }}
         labelFormatter={(value) => `Lap ${value}`}
         formatter={(value: number) => [`${(value / 1000).toFixed(3)}s`, "Time"]}
       />
@@ -173,8 +177,10 @@ export const TeamDistributionChart: React.FC<TeamDistributionProps> = ({
           backgroundColor: "#1F2937",
           border: "1px solid #374151",
           borderRadius: "8px",
-          color: "#FFFFFF",
+          color: "#F9FAFB",
         }}
+        labelStyle={{ color: "#F9FAFB" }}
+        itemStyle={{ color: "#F9FAFB" }}
       />
     </PieChart>
   </ResponsiveContainer>
@@ -220,8 +226,10 @@ export const PerformanceTrendChart: React.FC<PerformanceTrendProps> = ({
           backgroundColor: "#1F2937",
           border: "1px solid #374151",
           borderRadius: "8px",
-          color: "#FFFFFF",
+          color: "#F9FAFB",
         }}
+        labelStyle={{ color: "#F9FAFB" }}
+        itemStyle={{ color: "#F9FAFB" }}
       />
       <Legend />
       {drivers.map((driver) => (

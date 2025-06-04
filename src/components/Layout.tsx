@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 import {
   BarChart3,
@@ -43,15 +43,20 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-24">
             {/* Logo */}
-            <div className="flex items-center space-x-4">
+            <a 
+              href="https://henrypendleton.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center space-x-4 group"
+            >
               <div className="relative">
-                <div className="absolute inset-0 bg-f1-red blur-xl opacity-50"></div>
-                <div className="relative w-12 h-12 bg-gradient-to-br from-f1-red to-red-700 rounded-2xl flex items-center justify-center shadow-2xl transform hover:scale-110 transition-transform duration-200">
+                <div className="absolute inset-0 bg-f1-red blur-xl opacity-50 group-hover:opacity-70 transition-opacity"></div>
+                <div className="relative w-12 h-12 bg-gradient-to-br from-f1-red to-red-700 rounded-2xl flex items-center justify-center shadow-2xl transform group-hover:scale-110 transition-transform duration-200">
                   <span className="text-white font-black text-lg">F1</span>
                 </div>
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white tracking-tight">
+                <h1 className="text-2xl font-bold text-white tracking-tight group-hover:text-f1-red transition-colors">
                   Data Analytics
                 </h1>
                 <p className="text-sm text-f1-gray-400">
@@ -59,7 +64,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   Season Dashboard
                 </p>
               </div>
-            </div>
+            </a>
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-4">
@@ -195,18 +200,50 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Main Content */}
       <main className="flex-1 flex justify-center">
         <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-          <div className="animate-fade-in">{children}</div>
+          <Suspense 
+            fallback={
+              <div className="flex items-center justify-center min-h-[400px]">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-f1-red mx-auto mb-4"></div>
+                  <p className="text-white text-lg">Loading...</p>
+                </div>
+              </div>
+            }
+          >
+            <div className="animate-fade-in">{children}</div>
+          </Suspense>
         </div>
       </main>
 
       {/* Footer */}
       <footer className="bg-f1-black/50 border-t border-f1-gray-800">
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="text-center text-f1-gray-400 text-sm">
-            <p>F1 Data Analytics Dashboard - Built by Henry Pendleton</p>
-            <p className="mt-1">
-              Showcasing React 19, TypeScript, TanStack Router & Data
-              Visualization
+          <div className="text-center text-f1-gray-400 text-sm space-y-2">
+            <p>
+              F1 Data Analytics Dashboard - Built by{" "}
+              <a 
+                href="https://henrypendleton.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-f1-red hover:text-red-400 transition-colors font-medium"
+              >
+                Henry Pendleton
+              </a>
+            </p>
+            <p>
+              Showcasing React 19, TypeScript, TanStack Router & Data Visualization
+            </p>
+            <p className="text-xs">
+              Visit{" "}
+              <a 
+                href="https://henrypendleton.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-f1-red hover:text-red-400 transition-colors underline"
+              >
+                henrypendleton.com
+              </a>
+              {" "}for more projects and portfolio
             </p>
           </div>
         </div>

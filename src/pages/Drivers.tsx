@@ -11,7 +11,7 @@ import {
 import { useF1DataContext } from "../context/F1DataContext";
 
 const Drivers: React.FC = () => {
-  const { drivers, isLoading, error, isOnline, refreshData } =
+  const { drivers, isLoading, /* error, */ isOnline, refreshData } =
     useF1DataContext();
   const [selectedDriver, setSelectedDriver] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<"points" | "wins" | "podiums">("points");

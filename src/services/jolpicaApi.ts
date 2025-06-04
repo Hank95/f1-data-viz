@@ -31,17 +31,7 @@ interface DriverTable {
   };
 }
 
-interface ConstructorTable {
-  ConstructorTable: {
-    season?: string;
-    Constructors: Array<{
-      constructorId: string;
-      url: string;
-      name: string;
-      nationality: string;
-    }>;
-  };
-}
+// ConstructorTable interface removed as it's not used in the current implementation
 
 interface RaceTable {
   RaceTable: {
@@ -233,7 +223,7 @@ export async function getCurrentConstructorStandings(season: string = "current")
 
     return standings.map((standing) => {
       const constructorDrivers = allDrivers
-        .filter((driver) => {
+        .filter((_driver) => {
           // This is a simplified mapping - in a real app you'd need constructor-driver relationship data
           return true; // Would filter by constructor relationship
         })
@@ -353,9 +343,8 @@ export async function getRaceWithResults(
 // Get season statistics
 export async function getSeasonStats(season: string = "current") {
   try {
-    const [racesResponse, driversResponse] = await Promise.all([
+    const [racesResponse] = await Promise.all([
       fetchFromJolpica<RaceTable>(`/${season}/races`),
-      fetchFromJolpica<DriverTable>(`/${season}/drivers`),
     ]);
 
     const races = racesResponse.MRData.RaceTable.Races || [];

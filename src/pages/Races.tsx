@@ -19,7 +19,7 @@ const Races: React.FC = () => {
     races,
     seasonStats,
     isLoading,
-    error,
+    // error,
     isOnline,
     refreshData,
     getRaceResults,
