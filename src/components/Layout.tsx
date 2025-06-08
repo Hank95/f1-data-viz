@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 import {
   BarChart3,
@@ -11,6 +11,7 @@ import {
   Calendar,
 } from "lucide-react";
 import { useF1DataContext } from "../context/F1DataContext";
+import { useAnalytics } from "../hooks/useAnalytics";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -20,6 +21,21 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const { selectedSeason, setSelectedSeason } = useF1DataContext();
+  const { trackPageView, trackEvent } = useAnalytics();
+
+  // Track page views on route changes
+  useEffect(() => {
+    const pageTitles: Record<string, string> = {
+      "/": "Dashboard",
+      "/drivers": "Drivers",
+      "/constructors": "Constructors",
+      "/races": "Races",
+      "/analytics": "Analytics",
+    };
+    
+    const pageTitle = pageTitles[location.pathname] || "Unknown Page";
+    trackPageView(location.pathname, `F1 Data - ${pageTitle}`);
+  }, [location.pathname, trackPageView]);
 
   const navigation = [
     { name: "Dashboard", href: "/", icon: BarChart3 },
@@ -73,7 +89,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <Calendar size={16} className="text-f1-gray-400" />
                 <select
                   value={selectedSeason}
-                  onChange={(e) => setSelectedSeason(e.target.value)}
+                  onChange={(e) => {
+                    const newSeason = e.target.value;
+                    setSelectedSeason(newSeason);
+                    trackEvent('season_change', {
+                      category: 'engagement',
+                      label: `Season changed to ${newSeason}`,
+                      value: parseInt(newSeason === 'current' ? '2025' : newSeason),
+                    });
+                  }}
                   className="bg-f1-gray-800/50 border border-f1-gray-700 text-white rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-f1-red focus:border-transparent transition-all"
                 >
                   <option value="current">2025 (Current)</option>
@@ -157,7 +181,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   <Calendar size={16} className="text-f1-gray-400" />
                   <select
                     value={selectedSeason}
-                    onChange={(e) => setSelectedSeason(e.target.value)}
+                    onChange={(e) => {
+                      const newSeason = e.target.value;
+                      setSelectedSeason(newSeason);
+                      trackEvent('season_change', {
+                        category: 'engagement',
+                        label: `Season changed to ${newSeason} (mobile)`,
+                        value: parseInt(newSeason === 'current' ? '2025' : newSeason),
+                      });
+                    }}
                     className="flex-1 bg-f1-gray-800/50 border border-f1-gray-700 text-white rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-f1-red focus:border-transparent"
                   >
                     <option value="current">2025 (Current)</option>

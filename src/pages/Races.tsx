@@ -13,6 +13,7 @@ import {
 import { useF1DataContext } from "../context/F1DataContext";
 import { format } from "date-fns";
 import type { RaceResult } from "../types/f1";
+import { useAnalytics } from "../hooks/useAnalytics";
 
 const Races: React.FC = () => {
   const {
@@ -26,6 +27,7 @@ const Races: React.FC = () => {
   } = useF1DataContext();
   const [selectedRace, setSelectedRace] = useState<string | null>(null);
   const [raceResults, setRaceResults] = useState<RaceResult[]>([]);
+  const { trackEvent } = useAnalytics();
 
   const formatRaceDate = (dateString: string) => {
     return format(new Date(dateString), "MMM dd, yyyy");
@@ -67,7 +69,13 @@ const Races: React.FC = () => {
 
           {/* Refresh Button */}
           <button
-            onClick={refreshData}
+            onClick={() => {
+              refreshData();
+              trackEvent('data_refresh', {
+                category: 'engagement',
+                label: 'Races page refresh',
+              });
+            }}
             disabled={isLoading}
             className="p-2 rounded-lg bg-f1-gray-800 hover:bg-f1-gray-700 text-white transition-colors disabled:opacity-50"
           >
@@ -111,9 +119,15 @@ const Races: React.FC = () => {
                 ? "border-f1-red shadow-lg shadow-f1-red/20"
                 : "border-f1-gray-700/50 hover:border-f1-red/30"
             }`}
-            onClick={() =>
-              setSelectedRace(selectedRace === race.id ? null : race.id)
-            }
+            onClick={() => {
+              const isSelecting = selectedRace !== race.id;
+              setSelectedRace(isSelecting ? race.id : null);
+              trackEvent(isSelecting ? 'race_selected' : 'race_deselected', {
+                category: 'engagement',
+                label: race.name,
+                value: race.round,
+              });
+            }}
           >
             <div className="p-6">
               <div className="flex items-start justify-between mb-4">
